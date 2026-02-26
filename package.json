@@ -1,8 +1,7 @@
 {
-  "name": "lagrange-points-simulation",
+  "name": "react-vite-tailwind",
   "private": true,
-  "version": "0.1.0",
-  "homepage": "https://TheMR-777.github.io/lagrange-points-simulation/",
+  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -30,10 +29,11 @@
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "5.1.1",
-    "gh-pages": "^6.3.0",
     "tailwindcss": "4.1.17",
     "typescript": "5.9.3",
     "vite": "7.2.4",
-    "vite-plugin-singlefile": "2.3.0"
-  }
+    "vite-plugin-singlefile": "2.3.0",
+    "gh-pages": "^6.3.0"
+  },
+  "homepage": "https://TheMR-777.github.io/lagrange-points-simulation/"
 }

@@ -18,74 +18,80 @@ export function InfoPanel({ selectedId, onClose }: InfoPanelProps) {
           animate={{ opacity: 1, x: 0, scale: 1 }}
           exit={{ opacity: 0, x: 50, scale: 0.95 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="absolute right-6 top-6 bottom-6 w-96 rounded-2xl bg-acrylic film-grain p-6 shadow-2xl flex flex-col z-10 pointer-events-auto"
+          className="absolute right-0 top-0 bottom-0 w-[420px] panel-surface p-8 shadow-2xl flex flex-col z-10 pointer-events-auto border-l border-white/10"
+          style={{ borderTopLeftRadius: '24px', borderBottomLeftRadius: '24px' }}
         >
-          <div className="flex items-center justify-between mb-6 relative z-10">
-            <h2 className="text-3xl font-light text-white tracking-tight flex items-center gap-3">
-              <span className="text-cyan-400 font-bold">{data.id}</span>
-              Point
-            </h2>
+          <div className="flex items-start justify-between mb-8 relative z-10">
+            <div className="flex flex-col gap-1">
+              <h2 className="text-4xl font-light text-white tracking-tighter">
+                Lagrange <span className="text-cyan-400 font-bold">{data.id}</span>
+              </h2>
+              <p className="text-white/40 uppercase tracking-[0.2em] text-xs font-medium">Orbital Dynamics Data</p>
+            </div>
             <button
               onClick={onClose}
-              className="p-2 rounded-full hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+              className="p-2 rounded-full hover:bg-white/10 text-white/60 hover:text-white transition-colors mt-1"
             >
-              <X size={20} />
+              <X size={24} />
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-8 relative z-10">
-            <div className="space-y-2">
-              <p className="text-white/60 text-sm uppercase tracking-widest font-semibold flex items-center gap-2">
-                <Info size={16} className="text-cyan-400" />
-                Location
+          <div className="flex-1 overflow-y-auto pr-4 custom-scrollbar space-y-10 relative z-10">
+            
+            {/* Stability Badge (Hero Status) */}
+            <div className={`p-4 rounded-xl border ${
+              data.stability === 'Stable' 
+                ? 'bg-emerald-500/10 border-emerald-500/20' 
+                : 'bg-rose-500/10 border-rose-500/20'
+            }`}>
+              <div className="flex items-center gap-2 mb-2">
+                <Activity size={16} className={data.stability === 'Stable' ? 'text-emerald-400' : 'text-rose-400'} />
+                <span className={`text-xs font-bold uppercase tracking-widest ${
+                  data.stability === 'Stable' ? 'text-emerald-400' : 'text-rose-400'
+                }`}>
+                  {data.stability} Equilibrium
+                </span>
+              </div>
+              <p className="text-white/80 text-sm leading-relaxed">
+                {data.stability === 'Stable' 
+                  ? 'Objects at this point will tend to stay there. Small perturbations result in orbits around the point.' 
+                  : 'Objects here are balanced like a ball on a hill. Without station-keeping, they will eventually drift away.'}
               </p>
-              <p className="text-xl text-white font-medium leading-tight">
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-white/50 mb-1">
+                <Info size={16} />
+                <span className="text-xs uppercase tracking-widest font-bold">Location Profile</span>
+              </div>
+              <p className="text-xl text-white font-light leading-snug">
                 {data.shortDesc}
               </p>
             </div>
 
-            <div className="space-y-2">
-              <p className="text-white/60 text-sm uppercase tracking-widest font-semibold flex items-center gap-2">
-                <Activity size={16} className="text-cyan-400" />
-                Stability
-              </p>
-              <div className="flex items-center gap-3">
-                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
-                  data.stability === 'Stable' 
-                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
-                    : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
-                }`}>
-                  {data.stability}
-                </span>
-                <span className="text-white/70 text-sm">
-                  {data.stability === 'Stable' ? 'Can hold objects indefinitely' : 'Requires station-keeping thrust'}
-                </span>
-              </div>
-            </div>
-
             <div className="space-y-3">
-              <p className="text-white/60 text-sm uppercase tracking-widest font-semibold flex items-center gap-2">
-                <Globe size={16} className="text-cyan-400" />
-                Physics
-              </p>
-              <p className="text-white/80 leading-relaxed text-sm">
+              <div className="flex items-center gap-2 text-white/50 mb-1">
+                <Globe size={16} />
+                <span className="text-xs uppercase tracking-widest font-bold">Gravitational Physics</span>
+              </div>
+              <p className="text-white/80 leading-relaxed font-light">
                 {data.description}
               </p>
             </div>
 
             <div className="space-y-3">
-              <p className="text-white/60 text-sm uppercase tracking-widest font-semibold flex items-center gap-2">
-                <Zap size={16} className="text-cyan-400" />
-                Applications
-              </p>
-              <ul className="space-y-2">
+              <div className="flex items-center gap-2 text-white/50 mb-1">
+                <Zap size={16} />
+                <span className="text-xs uppercase tracking-widest font-bold">Key Applications</span>
+              </div>
+              <div className="grid gap-3">
                 {data.applications.map((app, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-white/80 bg-white/5 p-3 rounded-lg border border-white/5">
-                    <span className="text-cyan-400 mt-0.5">•</span>
+                  <div key={i} className="flex items-center gap-3 text-sm text-white/90 bg-white/5 p-4 rounded-lg border border-white/5 hover:bg-white/10 transition-colors">
+                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0"></div>
                     <span>{app}</span>
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
           </div>
         </motion.div>

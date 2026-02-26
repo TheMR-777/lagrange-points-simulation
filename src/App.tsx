@@ -37,47 +37,63 @@ export function App() {
 
       {/* Controls Overlay */}
       <motion.div
-        initial={{ x: -50, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
+        initial={{ y: 50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2, duration: 0.8 }}
         className="absolute left-8 bottom-8 flex flex-col gap-6 w-80 pointer-events-auto z-10"
       >
-        <div className="bg-acrylic film-grain p-6 rounded-2xl shadow-2xl">
-          <div className="flex items-center gap-2 mb-4 text-white/80 relative z-10">
+        <div className="panel-surface p-6 rounded-2xl">
+          <div className="flex items-center gap-2 mb-6 text-white relative z-10">
             <Mountain size={18} className="text-cyan-400" />
-            <h3 className="uppercase tracking-widest text-xs font-bold">Simulation Parameters</h3>
+            <h3 className="uppercase tracking-[0.15em] text-xs font-bold">Simulation Controls</h3>
           </div>
 
-          <div className="space-y-6 relative z-10">
-            <div className="space-y-3">
-              <div className="flex justify-between text-xs text-white/60">
-                <span className="uppercase tracking-wider">Mass Ratio (μ)</span>
-                <span className="font-mono text-cyan-400 font-bold">{mu.toFixed(3)}</span>
+          <div className="space-y-8 relative z-10">
+            {/* Mass Ratio Slider */}
+            <div className="space-y-4">
+              <div className="flex justify-between items-end">
+                <span className="text-[10px] uppercase tracking-widest text-white/50">Mass Ratio (μ)</span>
+                <span className="font-mono text-cyan-400 font-bold text-lg leading-none">{mu.toFixed(3)}</span>
               </div>
               
-              <input 
-                type="range" 
-                min="0.001" 
-                max="0.4" 
-                step="0.001" 
-                value={mu}
-                onChange={(e) => setMu(parseFloat(e.target.value))}
-                className="w-full h-1 bg-white/20 rounded-lg appearance-none cursor-pointer accent-cyan-400"
-              />
-              <div className="flex justify-between text-[10px] text-white/40 uppercase tracking-widest">
+              <div className="relative h-6 flex items-center">
+                <div className="absolute w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                   <div className="h-full bg-cyan-500/30" style={{ width: `${(mu / 0.4) * 100}%` }}></div>
+                </div>
+                <input 
+                  type="range" 
+                  min="0.001" 
+                  max="0.4" 
+                  step="0.001" 
+                  value={mu}
+                  onChange={(e) => setMu(parseFloat(e.target.value))}
+                  className="w-full h-6 opacity-0 absolute cursor-pointer z-20"
+                />
+                <div 
+                  className="absolute h-4 w-4 bg-cyan-400 rounded-full shadow-[0_0_10px_rgba(34,211,238,0.5)] pointer-events-none transition-transform z-10"
+                  style={{ left: `calc(${((mu - 0.001) / (0.4 - 0.001)) * 100}% - 8px)` }}
+                />
+              </div>
+              
+              <div className="flex justify-between text-[9px] text-white/30 uppercase tracking-widest font-medium">
                 <span>Earth/Sun</span>
-                <span>Binary System</span>
+                <span>Binary</span>
               </div>
             </div>
 
             <div className="h-[1px] bg-white/10 w-full"></div>
 
-            <label className="flex items-center justify-between cursor-pointer group">
-              <span className="text-xs uppercase tracking-widest text-white/60 group-hover:text-white transition-colors">
-                Gravity Potential Field
-              </span>
-              <div className={`relative w-10 h-5 transition-colors rounded-full border ${showPotential ? 'bg-cyan-500/20 border-cyan-500/50' : 'bg-white/5 border-white/20'}`}>
-                <div className={`absolute top-[1px] left-[1px] w-4 h-4 rounded-full transition-transform ${showPotential ? 'translate-x-5 bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]' : 'bg-white/40'}`}></div>
+            {/* Field Toggle */}
+            <label className="flex items-center justify-between cursor-pointer group select-none">
+              <div className="flex flex-col">
+                <span className="text-xs uppercase tracking-widest text-white/80 group-hover:text-white transition-colors font-bold">
+                  Potential Field
+                </span>
+                <span className="text-[10px] text-white/40 mt-0.5">Visualize gravity wells</span>
+              </div>
+              
+              <div className={`relative w-12 h-6 transition-colors rounded-full border ${showPotential ? 'bg-cyan-900/40 border-cyan-500/50' : 'bg-white/5 border-white/10'}`}>
+                <div className={`absolute top-[3px] left-[3px] w-4 h-4 rounded-full transition-transform duration-300 ${showPotential ? 'translate-x-6 bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.6)]' : 'bg-white/20'}`}></div>
               </div>
               <input type="checkbox" className="hidden" checked={showPotential} onChange={(e) => setShowPotential(e.target.checked)} />
             </label>
