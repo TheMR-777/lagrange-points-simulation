@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Info, Activity, Globe, Zap } from 'lucide-react';
 import { lagrangeData } from '../data/lagrange-data';
+import { useEffect, useState } from 'react';
 
 interface InfoPanelProps {
   selectedId: string | null;
@@ -9,24 +10,41 @@ interface InfoPanelProps {
 
 export function InfoPanel({ selectedId, onClose }: InfoPanelProps) {
   const data = selectedId ? lagrangeData[selectedId] : null;
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    // No need to call checkMobile immediately since we initialized state
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       {data && (
         <motion.div
-          initial={{ opacity: 0, x: 50, scale: 0.95 }}
-          animate={{ opacity: 1, x: 0, scale: 1 }}
-          exit={{ opacity: 0, x: 50, scale: 0.95 }}
+          key={isMobile ? 'mobile-panel' : 'desktop-panel'}
+          initial={isMobile ? { y: "100%", opacity: 0 } : { x: "100%", opacity: 0 }}
+          animate={isMobile ? { y: 0, opacity: 1 } : { x: 0, opacity: 1 }}
+          exit={isMobile ? { y: "100%", opacity: 0 } : { x: "100%", opacity: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="absolute right-0 top-0 bottom-0 w-[420px] panel-surface p-8 shadow-2xl flex flex-col z-10 pointer-events-auto border-l border-white/10"
-          style={{ borderTopLeftRadius: '24px', borderBottomLeftRadius: '24px' }}
+          className={`
+            fixed z-50 panel-surface shadow-2xl flex flex-col pointer-events-auto border-white/10 backdrop-blur-3xl
+            md:absolute md:right-0 md:top-0 md:bottom-0 md:w-[420px] md:h-full md:border-l md:rounded-l-3xl
+            bottom-0 left-0 right-0 h-[60vh] rounded-t-3xl border-t
+          `}
         >
-          <div className="flex items-start justify-between mb-8 relative z-10">
+          {/* Mobile Handle */}
+          <div className="md:hidden w-full flex justify-center pt-3 pb-1">
+            <div className="w-12 h-1.5 bg-white/20 rounded-full" />
+          </div>
+
+          <div className="flex items-start justify-between p-6 pb-2 md:p-8 md:pb-4 relative z-10">
             <div className="flex flex-col gap-1">
-              <h2 className="text-4xl font-light text-white tracking-tighter">
+              <h2 className="text-3xl md:text-4xl font-light text-white tracking-tighter">
                 Lagrange <span className="text-cyan-400 font-bold">{data.id}</span>
               </h2>
-              <p className="text-white/40 uppercase tracking-[0.2em] text-xs font-medium">Orbital Dynamics Data</p>
+              <p className="text-white/40 uppercase tracking-[0.2em] text-[10px] md:text-xs font-medium">Orbital Dynamics Data</p>
             </div>
             <button
               onClick={onClose}
@@ -36,7 +54,7 @@ export function InfoPanel({ selectedId, onClose }: InfoPanelProps) {
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto pr-4 custom-scrollbar space-y-10 relative z-10">
+          <div className="flex-1 overflow-y-auto px-6 md:px-8 pb-8 custom-scrollbar space-y-8 md:space-y-10 relative z-10">
             
             {/* Stability Badge (Hero Status) */}
             <div className={`p-4 rounded-xl border ${
